@@ -29,14 +29,9 @@ for n = 1:nr
     Ykm(m, m) = Ykm(m, m) + a(n, 1)^2*ykm(n, 1) + j*bkmsh(n, 1);
 end
 
-% 
-Ykm(1, 1) = Ykm(1, 1) + j*bk(1, 1);
-Ykm(2, 2) = Ykm(2, 2) + j*bk(2, 1);
-Ykm(3, 3) = Ykm(3, 3) + j*bk(3, 1);
-Ykm(4, 4) = Ykm(4, 4) + j*bk(4, 1);
- %Ykm(5, 5) = Ykm(5, 5) + j*bk(5, 1);
- %Ykm(6, 6) = Ykm(6, 6) + j*bk(6, 1);
-
+for n=1:nb
+    Ykm(n, n) = Ykm(n, n) + j*bk(n, 1);
+end
 
 % Matrizes separadas (Condutancia e Susceptancia)
 Gkm = real(Ykm);
@@ -211,17 +206,15 @@ fidt = fopen('RELATORIO.txt', 'wt');
 fprintf(fidt, 'RELATORIO DO FLUXO DE POTENCIA\n\n');
 fprintf(fidt, 'Dados das Barras\n');
 fprintf(fidt, '\t Barra \t MagV_a(pu) \t OV_a(*)\n');
-
 for n = 1:nb
     fprintf(fidt, '\t %d \t      %.2f \t          %.2f\n', B(n, 1), V(n, 1), O(n, 1));
 end
 
-
+% Relatorio XLS
 filename = 'RELATORIO.xls';
 TabelaRelatorio = table(pkm, qkm, pmk, qmk, V, O);
 writetable(TabelaRelatorio,filename,'Sheet','Relatorio','WriteVariableNames',true);
-%% Plotagem de Graficos
-% Plotando as tensões e correntes no diagrama de fasores
+%% Plotagem de Grafico polar
 figure
 V2_Incial= 0.9410 * exp(1j * (-0.11*pi/180));
 V2_Final= 0.9934 * exp(1j * (0.20*pi/180));
@@ -237,146 +230,4 @@ rlim([0 1.05]);
 title('Diagrama de Fasores');
 legend('V2_I','V2_F', 'V3_F', 'Location', 'best');
 
-%% Faltas
-
-%% blank
-% clc, clear;
-% Y4 = [-3j 1j 0 1j; 1j -2j 1j 0; 0 1j -2j 1j; 1j 0 1j -2j];
-% Z4 = inv(Y4);
-% E = 1;
-% Icc = E / Z4(4, 4);
-% Ifalta = [0; 0; 0; -Icc];
-% Vf = Z4 * Ifalta;
-% Vpf = [1; 1; 1; 1];
-% V = Vpf + Vf;
-% 
-% I14 = (V(1, 1) - V(4, 1)) / Z4(1,1)
-% I24 = (V(2, 1) - V(4, 1)) / Z4(2,2)
-% I34 = (V(3, 1) - V(4, 1)) / Z4(3,3)
-% I44 = (V(4, 1) - V(4 ,1)) / Z4(4,4)
-% I23 = (V(2, 1) - V(3, 1)) / 1j;
-
-% %%
-
-% In2 = 1*10^6/220
-% Ic2 = 0.75*10^6/220;
-% RTC2 = In2/5 
-% In1 = 1*10^6/3800
-% Ic1 = 0.75*10^6/3800;
-% RTC1 = In1/5
-% 
-% RTC2 = 1000;
-% RTC1 = 60;
-% 
-% Is1 = Ic1/RTC1;
-% Is2 = Ic2/RTC2;
-% 
-% tap = Is2/Is1
-% 
-% Itap1 = 3.2;
-% Itap2 = 2.9;
-% Im = (Is1 + Is2)/2
-% DeltaI = abs(Is1 - Is2)
-% Adj = (DeltaI / Im)*100
-
-% %%
-
-% %%
-% clc, clear;
-% VBaixa = 69e3;
-% 
-% VAlta = 220e3;
-% 
-% S = 150e6;
-% 
-% InBaixa = S / (sqrt(3)*VBaixa);
-% InAltaB = S / (sqrt(3)*(VAlta-20e3));
-% InAltaM = S / (sqrt(3)*VAlta);
-% InAltaA = S / (sqrt(3)*(VAlta+10e3));
-% 
-% RTCBaixa = InBaixa/(5/sqrt(3));
-% RTCAlta = InAltaB/5;
-% 
-% RTCBaixa = 500;
-% RTCAlta = 100;
-% 
-% %Corrente nos TCS
-% 
-% IsBaixa = InBaixa*sqrt(3)/RTCBaixa;
-% IsAltaB = InAltaB/RTCAlta;
-% IsAltaM = InAltaM/RTCAlta;
-% IsAltaA = InAltaA/RTCAlta;
-% 
-% Em = 0;
-% 
-% Eb = abs(IsAltaM - IsAltaB)/IsAltaB*100;
-% Ea = abs(IsAltaM - IsAltaA)/IsAltaA*100;
-% 
-% % Adj_Declividade
-% Eajuste = 10;
-% Evazio = 2;
-% Etc = Eb;
-% Er = Eajuste + Evazio + Etc
-% Adj_Declividade = 30;
-
-
-% %%
-% clc, clear;
-% RTG = 220 / 69;
-% RTCAlta = 60/5;
-% RTCBaixa = 200/5;
-% 
-% InBaixa = 7.39e6/(69e3);
-% IsBaixa = InBaixa / RTCBaixa;
-% 
-% InAlta = InBaixa / RTG;
-% IsAlta = InAlta / RTCAlta;
-% 
-% deltaI = abs(IsBaixa-IsAlta);
-% Im = (IsAlta + IsBaixa)/2
-% 
-% ad= deltaI/Im*100;
-
-
-% %%
-% clc, clear;
-% 
-% S = 85e6;
-% V = 138e3;
-% kf = 1.35;
-% Icc = 10e3;
-% 
-% In = S/(sqrt(3)*V)
-% If = Icc/20
-% RTC = 100
-% Icm = kf*In;
-% Is = Icm/RTC
-
-
-%  %%
-%  clear, clc;
-%  p = 0.194;
-%  km = 50;
-%  zrede = 0.8 * km * p;
-%  zrele = zrede * ((400/5)/(69e3/(115/sqrt(3))));
-
-
-% %%
-% clear, clc;
-% 
-% S = 125e6;
-% Icc = 11.5e3;
-% V = 138e3;
-% kf = 1.2;
-% t = 0.5;
-% RTC = 120;
-% 
-% In = S/(sqrt(3)*V);
-% 
-% 
-% 
-% Itap = In * kf/RTC;
-% Iacio = Itap*RTC;
-% 
-% M = Icc/Iacio;
 
