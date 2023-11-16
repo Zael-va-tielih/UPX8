@@ -166,15 +166,13 @@ for n = 1:nr
     Okm = O(k, 1) - O(m, 1);
     Omk = O(m, 1) - O(k, 1);
     % Calculo de Pkm e Pmk
-    %Pkm(k, m) = Gkm(k, m)*V(k, 1)^2 - Gkm(k, m)*V(k, 1)*V(m, 1)*cos(Okm) - Bkm(k, m)*V(k, 1)*V(m, 1)*sin(Okm);
-    %Pkm(m, k) = Gkm(m, k)*V(m, 1)^2 - Gkm(m, k)*V(m, 1)*V(k, 1)*cos(Okm) - Bkm(m, k)*V(m, 1)*V(k, 1)*sin(Okm);
     Pkm(k, m) = a(n, 1)*V(k, 1)*V(m, 1) * (a(n, 1)*Gkm(k, m)*V(k, 1)/V(m, 1) - Gkm(k, m)*cos(Okm + fi(n, 1)) - Bkm(k, m)*sin(Okm + fi(n, 1)));
-    Pkm(m, k) = a(n, 1)*V(k, 1)*V(m, 1) * (a(n, 1)*Gkm(m, k)*V(k, 1)/V(m, 1) - Gkm(k, m)*cos(Okm + fi(n, 1)) - Bkm(k, m)*sin(Okm + fi(n, 1)));
+    Pkm(m, k) = a(n, 1)*V(k, 1)*V(m, 1) * (a(n, 1)*Gkm(m, k)*V(k, 1)/V(m, 1) - Gkm(k, m)*cos(Omk + fi(n, 1)) - Bkm(k, m)*sin(Omk + fi(n, 1)));
     %Pkm(k, k) = Pkm(k, k) + a(n, 1)*V(k, 1)*V(m, 1) * (a(n, 1)*Gkm(k, k)*V(k, 1)/V(m, 1) - Gkm(k, m)*cos(Okm + fi(n, 1)) - Bkm(k, m)*sin(Okm + fi(n, 1)));
     %Pkm(m, m) = Pkm(m, m) + a(n, 1)*V(k, 1)*V(m, 1) * (a(n, 1)*Gkm(m, m)*V(k, 1)/V(m, 1) - Gkm(k, m)*cos(Okm + fi(n, 1)) - Bkm(k, m)*sin(Okm + fi(n, 1)));
 
     Pmk(k, m) = V(m, 1)*V(k, 1) * (Gkm(k, m)*V(m, 1)/V(k, 1) - a(n, 1)*Gkm(k, m)*cos(Okm + fi(n, 1)) + a(n, 1)*Bkm(k, m)*sin(Okm + fi(n, 1)));
-    Pmk(m, k) = V(m, 1)*V(k, 1) * (Gkm(m, k)*V(m, 1)/V(k, 1) - a(n, 1)*Gkm(m, k)*cos(Okm + fi(n, 1)) + a(n, 1)*Bkm(m, k)*sin(Okm + fi(n, 1)));
+    Pmk(m, k) = V(m, 1)*V(k, 1) * (Gkm(m, k)*V(m, 1)/V(k, 1) - a(n, 1)*Gkm(m, k)*cos(Omk + fi(n, 1)) + a(n, 1)*Bkm(m, k)*sin(Omk + fi(n, 1)));
     %Pmk(k, k) = Pmk(k, k) + V(m, 1)*V(k, 1) * (Gkm(k, k)*V(m, 1)/V(k, 1) - a(n, 1)*Gkm(k, k)*cos(Okm + fi(n, 1)) + a(n, 1)*Bkm(k, k)*sin(Okm + fi(n, 1)));
     %Pmk(m, m) = Pmk(m, m) + V(m, 1)*V(k, 1) * (Gkm(m, m)*V(m, 1)/V(k, 1) - a(n, 1)*Gkm(m, m)*cos(Okm + fi(n, 1)) + a(n, 1)*Bkm(m, m)*sin(Okm + fi(n, 1)));
 
@@ -193,6 +191,7 @@ end
 % Matriz de perdas
 Perdas_Ativas = Pkm - Pmk;
 Perdas_Reativas = Qkm - Qmk;
+
 for i=1:nb
     for j=1:nb
         Potencia_ativa_saida(i, 1) = Potencia_ativa_saida(i, 1) + Pkm(i, j);
@@ -201,6 +200,7 @@ for i=1:nb
         Potencia_reativa_entrada(i, 1) = Potencia_reativa_entrada(i, 1) + Qmk(i, j);
     end
 end
+
 %% Relatorio
 fidt = fopen('RELATORIO.txt', 'wt');
 fprintf(fidt, 'RELATORIO DO FLUXO DE POTENCIA\n\n');
